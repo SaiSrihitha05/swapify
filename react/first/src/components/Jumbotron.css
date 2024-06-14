@@ -1,0 +1,10 @@
+.jumbotron {
+    background-size: cover;
+    background-position: center;
+    height: 100vh; /* Adjust height as needed */
+  }
+  
+  .jumbotron .container {
+    text-align: center; /* Center text */
+  }
+  

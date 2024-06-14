@@ -1,0 +1,24 @@
+.product-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    transition: transform 0.3s;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card-img-top {
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .card-footer {
+    background-color: #f8f9fa;
+    text-align: center;
+  }
+  
+  .text-body-secondary {
+    color: #6c757d;
+  }
+  

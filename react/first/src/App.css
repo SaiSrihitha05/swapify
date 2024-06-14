@@ -1,0 +1,14 @@
+/* src/App.css */
+.btn {
+    background-color: navy; /* Navy blue color */
+    color: white;           /* Text color */
+    border: none;           /* Remove border */
+    padding: 10px 20px;     /* Padding for the button */
+    font-size: 16px;        /* Font size */
+    cursor: pointer;        /* Pointer cursor on hover */
+  }
+  
+  .btn:hover {
+    background-color: rgba(0, 0, 128, 0.97); /* Slightly darker shade on hover */
+  }
+  
