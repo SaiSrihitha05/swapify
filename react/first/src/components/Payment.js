@@ -3,32 +3,21 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 function Payment() {
-  const { search } = useLocation();
+  const { state } = useLocation();
   const navigate = useNavigate();
-  const [productName, setProductName] = useState('');
-  const [price, setPrice] = useState(null);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState('');
 
-  useEffect(() => {
-    // Extract the product name and price from the URL query parameters
-    const params = new URLSearchParams(search);
-    const productNameParam = params.get('productName');
-    const priceParam = params.get('price');
-    if (productNameParam && priceParam) {
-      setProductName(productNameParam);
-      setPrice(priceParam);
-    }
-  }, [search]);
+  const { products, totalAmount } = state;
 
   const handleConfirmOrder = async () => {
     try {
       setPaymentProcessing(true);
-      // Check if productName and price are not null
-      if (productName && price) {
+      // Check if products and totalAmount are not null
+      if (products && totalAmount) {
         const response = await axios.post('/checkout', {
-          productName: productName,
-          price: price
+          products,
+          totalAmount
         });
         
         if (response.status === 200) {
@@ -52,15 +41,19 @@ function Payment() {
   return (
     <div className="container">
       <h2>Payment Details</h2>
-      {productName && price ? (
+      {products && totalAmount ? (
         <>
-          <div className="mb-3">
-            <label className="form-label">Product Name</label>
-            <input type="text" className="form-control" value={productName} readOnly />
+          <div className="product-list">
+            {products.map((product, index) => (
+              <div key={index} className="product-item">
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <p>Price: ${product.price}</p>
+              </div>
+            ))}
           </div>
-          <div className="mb-3">
-            <label className="form-label">Price</label>
-            <input type="text" className="form-control" value={price} readOnly />
+          <div className="subtotal">
+            <h3>Subtotal: ${totalAmount}</h3>
           </div>
         </>
       ) : (

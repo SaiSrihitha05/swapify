@@ -1,46 +1,70 @@
-
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   addToCart,
   clearCart,
-  decreaseCart,
   getTotals,
   removeFromCart,
-} from '../redux/slices/cartSlice'
-import './Cart.css'
+} from '../redux/slices/cartSlice';
+import './Cart.css';
 import { Link } from "react-router-dom";
+import Modal from './modal';  // Import the Modal component
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [itemAddedMessage, setItemAddedMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     dispatch(getTotals());
   }, [cart, dispatch]);
-  const handlePayment = ()=>{
-    navigate('/Razorpay')
-  }
+
+  const handlePayment = () => {
+    const productDetails = cart.cartItems.map(item => ({
+      name: item.title,
+      price: item.price,
+      description: item.description,
+    }));
+    navigate('/payment', { state: { products: productDetails, totalAmount: cart.cartTotalAmount } });
+  };
+
   const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
+    const isProductInCart = cart.cartItems.find(item => item.productId === product.productId);
+    if (isProductInCart) {
+      setShowModal(true);
+    } else {
+      dispatch(addToCart(product));
+      setItemAddedMessage(`${product.title} has been added to the cart`);
+      setTimeout(() => {
+        setItemAddedMessage('');
+      }, 3000); // Clear message after 3 seconds
+    }
   };
-  const handleDecreaseCart = (product) => {
-    dispatch(decreaseCart(product));
-  };
+
   const handleRemoveFromCart = (product) => {
     dispatch(removeFromCart(product));
   };
+
   const handleClearCart = () => {
     dispatch(clearCart());
   };
-  const handleProducts = () =>{
-    navigate('/buyer-profile/products')
-  }
+
+  const handleProducts = () => {
+    navigate('/buyer-profile/products');
+  };
+
   return (
     <div className="cart-container">
       <h2>Shopping Cart</h2>
+      {itemAddedMessage && <div className="item-added-message">{itemAddedMessage}</div>}
+      <Modal 
+        show={showModal} 
+        onClose={() => setShowModal(false)} 
+        message="Item is already in the cart"
+      />
       {cart.cartItems.length === 0 ? (
         <div className="cart-empty">
           <p>Your cart is currently empty</p>
@@ -71,28 +95,27 @@ const Cart = () => {
             <h3 className="total">Total</h3>
           </div>
           <div className="cart-items">
-            {cart.cartItems &&
-              cart.cartItems.map((cartItem) => (
-                <div className="cart-item" key={cartItem.productId}>
-                  <div className="cart-product">
-                    <img src={cartItem.imageurl} alt={cartItem.title} />
-                    <div>
-                      <h3>{cartItem.title}</h3>
-                      <p>{cartItem.description}</p>
-                      <button onClick={() => handleRemoveFromCart(cartItem)}>
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                  <div className="cart-product-price">${cartItem.price}</div>
-                  <div className="cart-product-total-price">
-                    ${cartItem.price * cartItem.cartQuantity}
+            {cart.cartItems.map((cartItem) => (
+              <div className="cart-item" key={cartItem.productId}>
+                <div className="cart-product">
+                  <img src={cartItem.imageurl} alt={cartItem.title} />
+                  <div>
+                    <h3>{cartItem.title}</h3>
+                    <p>{cartItem.description}</p>
+                    <button onClick={() => handleRemoveFromCart(cartItem)}>
+                      Remove
+                    </button>
                   </div>
                 </div>
-              ))}
+                <div className="cart-product-price">${cartItem.price}</div>
+                <div className="cart-product-total-price">
+                  ${cartItem.price}
+                </div>
+              </div>
+            ))}
           </div>
           <div className="cart-summary">
-            <button className="clear-btn" onClick={() => handleClearCart()}>
+            <button className="clear-btn" onClick={handleClearCart}>
               Clear Cart
             </button>
             <div className="cart-checkout">
@@ -101,7 +124,7 @@ const Cart = () => {
                 <span className="amount">${cart.cartTotalAmount}</span>
               </div>
               <p>Taxes and shipping calculated at checkout</p>
-              <button onClick={handlePayment}>Check out </button>
+              <button onClick={handlePayment}>Checkout</button>
               <div className="continue-shopping">
                 <Link to="/">
                   <svg

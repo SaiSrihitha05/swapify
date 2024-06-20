@@ -1,14 +1,14 @@
-*{
+* {
   box-sizing: border-box;
-  margin: 0px;
+  margin: 0;
 }
+
 nav {
   display: flex;
   background-color: #13174b;
   align-items: center;
-  padding:5px;
-  justify-content: space-around;
-  text-decoration: none;
+  padding: 5px;
+  justify-content: space-between;
 }
 
 nav .title {
@@ -18,11 +18,13 @@ nav .title {
 
 nav ul {
   display: flex;
+  margin: 0;
+  padding: 0;
 }
 
 nav ul li {
   list-style: none;
-  padding-left: 2px;
+  margin: 0 5px; /* Adjust margin as needed */
 }
 
 nav ul li a {
@@ -32,9 +34,17 @@ nav ul li a {
   color: white; /* Default text color */
 }
 
-nav ul li a:hover,
+
+
 nav ul li a:active {
   border: 1px solid white;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5)
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+
+nav ul li a:focus {
+  border: 1px solid white;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
